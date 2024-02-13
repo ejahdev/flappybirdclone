@@ -11,6 +11,8 @@ var imageSwitchDelay = 5;
 
 var frameCounter = 0;
 
+var collisionPadding = 5;
+
 function drawBackground() {
     ctx.drawImage(backgroundImage, backgroundX, 0, canvas.width, canvas.height);
     ctx.drawImage(backgroundImage, backgroundX + canvas.width, 0, canvas.width, canvas.height);
@@ -83,19 +85,32 @@ function drawObstacles() {
 
 function checkCollision() {
     for (var i = 0; i < obstacles.length; i++) {
+      var obstacle = obstacles[i];
+
+      var birdLeft = bird.x + collisionPadding;
+      var birdRight = bird.x + bird.width - collisionPadding;
+      var birdTop = bird.y + collisionPadding;
+      var birdBottom = bird.y + bird.height - collisionPadding;
+
+      var obstacleLeft = obstacle.x;
+      var obstacleRight = obstacle.x + obstacleWidth;
+      var obstacleTop = obstacle.y;
+      var obstacleBottom = obstacle.y + obstacle.height;
+
       if (
-        bird.x < obstacles[i].x + obstacleWidth &&
-        bird.x + bird.width > obstacles[i].x &&
-        bird.y < obstacles[i].y + obstacles[i].height &&
-        bird.y + bird.height > obstacles[i].y
+        birdRight > obstacleLeft &&
+        birdLeft < obstacleRight &&
+        birdBottom > obstacleTop &&
+        birdTop < obstacleBottom
       ) {
+
         birdFall();
         endGame();
         return;
       }
     }
 
-    if (bird.y >= canvas.height - bird.height || bird.y + bird.height <= 0) {
+    if (bird.y >= canvas.height - bird.height || bird.y <= 0) {
       birdFall();
       endGame();
     }
